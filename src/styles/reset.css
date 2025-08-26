@@ -1,0 +1,88 @@
+/* CSS Reset - Remove all default styling */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	line-height: 1.15;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	line-height: 1.5;
+}
+
+/* Remove list styles */
+ol, ul {
+	list-style: none;
+}
+
+/* Remove text decoration */
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+/* Remove button styles */
+button {
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	cursor: pointer;
+}
+
+/* Remove input styles */
+input, textarea, select {
+	font: inherit;
+	border: none;
+	outline: none;
+	background: none;
+}
+
+/* Remove table styles */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* Remove image border */
+img {
+	border-style: none;
+	max-width: 100%;
+	height: auto;
+}
+
+/* Remove form element styles */
+fieldset {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* Remove heading margins */
+h1, h2, h3, h4, h5, h6 {
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+/* Remove paragraph margins */
+p {
+	margin: 0;
+}
+
+/* Remove blockquote styles */
+blockquote, q {
+	quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}

@@ -16,19 +16,49 @@ export async function GET() {
       // Get the raw content and use description/excerpt as fallback
       let htmlContent = post.body || post.data.description || post.data.excerpt || '';
       
-      // Simple markdown to HTML conversion for images
+      // Convert markdown to HTML
+      // 1. Convert images
       htmlContent = htmlContent.replace(
         /!\[([^\]]*)\]\(([^)]+)\)/g,
         '<img src="$2" alt="$1" />'
       );
+      
+      // 2. Convert links
+      htmlContent = htmlContent.replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2">$1</a>'
+      );
+      
+      // 3. Convert bold text
+      htmlContent = htmlContent.replace(
+        /\*\*([^*]+)\*\*/g,
+        '<strong>$1</strong>'
+      );
+      
+      // 4. Convert italic text
+      htmlContent = htmlContent.replace(
+        /\*([^*]+)\*/g,
+        '<em>$1</em>'
+      );
+      
+      // 5. Convert paragraphs (double line breaks)
+      htmlContent = htmlContent.replace(/\n\n+/g, '</p><p>');
+      
+      // 6. Wrap in paragraph tags if there's content
+      if (htmlContent.trim()) {
+        htmlContent = '<p>' + htmlContent + '</p>';
+      }
+      
+      // 7. Convert single line breaks to <br> within paragraphs
+      htmlContent = htmlContent.replace(/\n/g, '<br>');
       
       // Convert relative image URLs to absolute URLs
       const absoluteContent = htmlContent.replace(
         /src="\/images\//g,
         `src="${SITE_URL}/images/`
       ).replace(
-        /!\[([^\]]*)\]\(\/images\//g,
-        `![$1](${SITE_URL}/images/`
+        /href="\/posts\//g,
+        `href="${SITE_URL}/posts/`
       );
       
       const postUrl = post.data.permalink 

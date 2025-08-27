@@ -98,8 +98,10 @@ blockquote {
 
 hr {
   height: 1px;
+  width: 100%;
   color: transparent;
-  border-bottom: var(--border-width-default) solid var(--020);
+  border: none;
+  border-bottom: 1px solid var(--030);
 }
 
 /* Dividers */

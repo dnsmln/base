@@ -57,6 +57,7 @@ const { Content } = entry ? await entry.render() : { Content: null };
           {Astro.url.pathname !== "/" && <a href="/" class="dimmed">Home</a>}
           <a href="/posts/about">About</a>
           <a href="/posts/colophon">Colophon</a>
+          <a href="/feed.rss">RSS</a>
         </div>
         <!-- Debug: Current pathname is {Astro.url.pathname} -->
       </div>

@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import { SITE_CONFIG } from '../config';
 
 const latest = await getCollection("posts")
   .then(posts => posts
@@ -8,6 +9,17 @@ const latest = await getCollection("posts")
     .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
   )
   .then(posts => posts[0]);
+
+// Create a virtual entry for the homepage with site config metadata
+const homeEntry = {
+  data: {
+    title: SITE_CONFIG.siteTitle,
+    excerpt: SITE_CONFIG.description,
+    date: latest?.data.date || new Date(),
+    ogImage: SITE_CONFIG.ogImage
+  },
+  render: () => Promise.resolve({ Content: null })
+};
 ---
 
-<Layout entry={latest} />
+<Layout entry={homeEntry} />

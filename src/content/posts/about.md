@@ -1,6 +1,6 @@
 ---
 title: About
-date: 1988-09-20
+date: 2025-08-25
 permalink: about
 listed: false
 excerpt: An obsessive organizer turned software designer. I write about what sticks to my mind—usually technology, design, and their impact on offline life.

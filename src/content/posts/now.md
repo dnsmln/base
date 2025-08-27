@@ -5,9 +5,6 @@ permalink: now
 listed: false
 excerpt: What I'm currently working on and thinking about.
 ---
-### Kinesiology
-From time to time, I help my good friend train climbing and running athletes, learning hands-on while studying kinesiology (those thick books).
-
 ### Buddhism
 Mid-2024, my partner introduced me to Buddhism and a couple of classes from [Ethan Nichtern](http://ethannichtern.com), a Buddhist teacher and author, I recommend his work. It was approachable, and practical. It opened myself to questions about my relationship with design and my own identity. This eventually led to very positive change, taking some professional risks for the best.
 
@@ -23,7 +20,5 @@ I'm aiming to climb **v6/v7** routes by end of the climbing season where I resid
 ### Trail running
 I’ve never liked running on roads. I love heading out early in the morning to the mountain that's just 5 minutes from my home - it feels like my personal garden.
 
-I've found my sweet spot with 25km trail runs, which provide just the right challenge without consuming too much of my day. 
-
-Next summer, I'm aiming to run **25km** with **700m D+**, with an average **150BPM**.
+I've found my sweet spot with 25km trail runs, which provide just the right challenge without consuming too much of my day.
 

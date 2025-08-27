@@ -13,7 +13,7 @@ const latest = await getCollection("posts")
 // Create a virtual entry for the homepage with site config metadata but latest post content
 const homeEntry = {
   data: {
-    title: SITE_CONFIG.siteTitle,
+    title: latest?.data.title || SITE_CONFIG.siteTitle,
     excerpt: SITE_CONFIG.description,
     date: latest?.data.date || new Date(),
     ogImage: SITE_CONFIG.ogImage

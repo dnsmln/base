@@ -36,8 +36,7 @@ const { Content } = entry ? await entry.render() : { Content: null };
             {date && <i>{getSeason(date)}</i>}
           </div>
           <div class="content markdown">
-            <h1>{title}</h1>
-            {Content && <Content />}
+            <Content />
           </div>
         </section>
       ) : (

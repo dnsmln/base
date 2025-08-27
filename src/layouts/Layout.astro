@@ -13,8 +13,10 @@ const description = entry?.data?.excerpt || SITE_CONFIG.description;
 const date = entry?.data?.date;
 
 const pageTitle = Astro.url.pathname === '/' 
-  ? "Words, colors, and shapes"
-  : `Home of Denis Moulin`;
+  ? "Words, shapes, and colors"
+  : entry?.data?.title 
+    ? `${entry.data.title} – Denis Moulin`
+    : `Home of Denis Moulin`;
 
 const { Content } = entry ? await entry.render() : { Content: null };
 ---

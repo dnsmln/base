@@ -1,0 +1,142 @@
+---
+---
+
+<script>
+class ImageViewer {
+  private overlay: HTMLDivElement;
+  private fullImage: HTMLImageElement;
+
+  constructor() {
+    this.setupImages();
+    this.createOverlay();
+  }
+
+  setupImages() {
+    document.querySelectorAll('img').forEach(img => {
+      if (!img.classList.contains('image-viewer-fullimage')) {
+        this.setupLazyLoading(img as HTMLImageElement);
+        img.classList.add('clickable');
+        img.tabIndex = 0; // Make images focusable
+        img.setAttribute('role', 'button');
+        img.setAttribute('aria-label', 'Click to view enlarged image');
+        
+        const clickHandler = () => this.openFullscreen((img as HTMLImageElement).src);
+        const keyHandler = (e: KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.openFullscreen((img as HTMLImageElement).src);
+          }
+        };
+        
+        img.addEventListener('click', clickHandler);
+        img.addEventListener('keydown', keyHandler);
+      }
+    });
+  }
+
+  setupLazyLoading(img: HTMLImageElement) {
+    if ('loading' in HTMLImageElement.prototype) {
+      img.loading = 'lazy';
+      img.addEventListener('load', () => {
+        img.classList.add('loaded');
+      });
+    } else {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const target = entry.target as HTMLImageElement;
+            if (target.dataset.src) {
+              target.src = target.dataset.src;
+              target.removeAttribute('data-src');
+              target.addEventListener('load', () => {
+                target.classList.add('loaded');
+              });
+            }
+            observer.unobserve(target);
+          }
+        });
+      });
+      
+      if (img.dataset.src) {
+        observer.observe(img);
+      }
+    }
+  }
+
+  createOverlay() {
+    this.overlay = document.createElement('div');
+    this.overlay.className = 'image-viewer-overlay';
+    this.overlay.setAttribute('role', 'dialog');
+    this.overlay.setAttribute('aria-modal', 'true');
+    this.overlay.setAttribute('aria-label', 'Image viewer');
+    this.overlay.tabIndex = -1;
+    
+    this.overlay.addEventListener('click', e => {
+      if (e.target === this.overlay) {
+        this.closeFullscreen();
+      }
+    });
+
+    this.overlay.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeFullscreen();
+      }
+      if (e.key === 'Tab') {
+        e.preventDefault(); // Trap focus within the overlay
+      }
+    });
+
+    this.fullImage = document.createElement('img');
+    this.fullImage.className = 'image-viewer-fullimage';
+    this.fullImage.setAttribute('role', 'img');
+    this.overlay.appendChild(this.fullImage);
+    document.body.appendChild(this.overlay);
+  }
+
+  openFullscreen(src: string) {
+    this.fullImage.src = src;
+    this.fullImage.alt = 'Enlarged image';
+    this.overlay.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    
+    // Focus the overlay for keyboard navigation
+    setTimeout(() => {
+      this.overlay.focus();
+    }, 100);
+  }
+
+  closeFullscreen() {
+    this.overlay.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+    
+    // Return focus to the clicked image
+    const activeImg = document.querySelector('img.clickable:focus') as HTMLElement;
+    if (activeImg) {
+      activeImg.focus();
+    }
+  }
+
+  cleanup() {
+    document.querySelectorAll('img.clickable').forEach(img => {
+      img.removeEventListener('click', () => this.openFullscreen((img as HTMLImageElement).src));
+    });
+    this.overlay.removeEventListener('click', e => {
+      if (e.target === this.overlay) {
+        this.closeFullscreen();
+      }
+    });
+  }
+}
+
+// Initialize the image viewer when the DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  (window as any).imageViewer = new ImageViewer();
+});
+
+// Cleanup when the page is unloaded
+window.addEventListener('unload', () => {
+  if ((window as any).imageViewer) {
+    (window as any).imageViewer.cleanup();
+  }
+});
+</script>

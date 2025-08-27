@@ -1,0 +1,336 @@
+@import url("reset.css");
+
+/* Font declarations */
+@font-face {
+  font-family: "regular";
+  src: local("Finder"), url("../fonts/regular.ttf") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "serif";
+  font-style: normal;
+  src: url("../fonts/serif.otf") format("truetype");
+  font-weight: 600;
+  font-display: swap;
+}
+
+/* Root variables */
+:root {
+  --radius: 0.5rem;
+  --border-width-default: 1px;
+  --000: rgb(250, 247, 242);
+  --010: rgba(21, 21, 21, 0.0125);
+  --020: rgba(21, 21, 21, 0.025);
+  --030: rgba(21, 21, 21, 0.075);
+  --060: rgba(21, 21, 21, 0.3);
+  --080: rgba(21, 21, 21, 0.7);
+  --100: rgba(21, 21, 21, 1);
+  --shadow010: 0px 0px 0px 1px var(--030);
+  --shadow050: 0px 0px 1rem 0.5rem var(--060);
+  transition: all 0.5s ease;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --000: rgb(18, 18, 20);
+    --010: rgba(255, 255, 255, 0.0125);
+    --020: rgba(255, 255, 255, 0.025);
+    --030: rgba(255, 255, 255, 0.075);
+    --060: rgba(255, 255, 255, 0.6);
+    --080: rgba(255, 255, 255, 0.8);
+    --100: rgba(255, 255, 255, 1);
+    --shadow010: 0px 0px 0px 1px var(--030);
+    --shadow050: 0px 0px 1rem 0.5rem var(--060);
+  }
+}
+
+/* Selection styles */
+::selection {
+  color: var(--000);
+  background-color: var(--100);
+}
+
+/* Base styles */
+
+body {
+  font: 1rem "regular", system-ui;
+  line-height: 1.6;
+  color: var(--080);
+  background: var(--000);
+  text-wrap: pretty;
+}
+
+h1 {
+  font: 0.8rem "serif", serif;
+  letter-spacing: 0.05rem;
+  color: var(--100);
+  text-transform: capitalize;
+}
+
+h2, h3, h4, h5, h6 {
+  font: 1.1rem "regular", sans-serif;
+  color: var(--100);
+}
+
+i {
+  color: var(--060);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-style: normal;
+  vertical-align: top;
+}
+
+b, strong{
+  font: 0.6rem "serif", serif;
+  color: var(--100);
+}
+
+blockquote {
+  padding: 1rem;
+  color: var(--100);
+  background: var(--020);
+  border: var(--border-width-default) solid var(--030);
+  border-radius: var(--radius);
+}
+
+hr {
+  height: 1px;
+  color: transparent;
+  border-bottom: var(--border-width-default) solid var(--020);
+}
+
+/* Dividers */
+.divider { display: block; background: var(--030); }
+.divider--h { width: 100%; height: 1px; }
+
+/* Links */
+a:link,
+a:visited,
+a:hover,
+a:active {
+  display: inline-block;
+  color: inherit;
+  border-bottom: var(--border-width-default) dotted var(--060);
+  text-decoration: none;
+  align-self: flex-start;
+  cursor: pointer;
+}
+
+a:hover {
+  color: var(--100);
+  background-color: var(--030);
+  border-bottom: var(--border-width-default) dotted transparent;
+}
+
+
+/* Section layout */
+main{  margin-bottom: 4rem;}
+
+section,
+article {
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 34rem 1fr;
+  border-bottom: var(--border-width-default) solid var(--030);
+}
+
+section [class*="title"] {
+  padding: 2.2rem 2rem;
+  text-align: right;
+}
+
+section [class*="content"] {
+  padding: 2rem;
+  border-left: var(--border-width-default) solid var(--030);
+}
+
+section.footer{
+  z-index: 8888;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--000);
+  border-top: var(--border-width-default) solid var(--030);
+  /* Use a gradient to fade in the footer background from transparent to solid
+  background: linear-gradient(to bottom, transparent 0%, var(--000) 40%); */
+}
+
+section.footer [class*="title"] {
+  padding: 1.5rem 2rem 1rem;
+}
+
+section.footer [class*="content"] {
+  padding: 1.25rem 2rem 1rem;
+}
+
+@media screen and (max-width: 64rem) {
+
+  main{  margin-bottom: 3.8rem;}
+
+  section {
+    grid-template-columns: 12rem 1fr;
+  }
+}
+
+@media screen and (max-width: 48rem) {
+
+  section {
+    grid-template-columns: 1fr;
+  }
+
+  section > *:first-child {
+    display: none;
+  }
+
+  section [class*="content"] {
+    padding: 2rem;
+    border-left: none;
+  }
+
+  .dimmed.hide-on-mobile {
+    display: none;
+  }
+}
+
+
+
+/* Content spacing */
+.content.markdown > h1{
+  margin: 0 0 1rem;
+}
+
+.content.markdown > *:not(h1) {
+  margin: 1rem 0 0.5rem;
+}
+
+.content.markdown > p {
+  margin: 0.5rem 0 1.5rem;
+}
+
+/* Lists */
+ul,
+ol {
+  margin: 0 0 1.5rem;
+  padding-inline-start: 2rem;
+}
+
+li {
+  margin: 0 0 0.75rem;
+}
+
+/* Images */
+.content > p > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 1.5rem 0;
+  border-radius: var(--radius);
+  border: var(--border-width-default) solid var(--030);
+}
+
+/* List styles */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.list.tiny { gap: 0.75rem; }
+.list.inline { flex-direction: row; }
+
+.list .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.list .entry {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.list .row .divider {
+  width: calc(100% - 2rem);
+  border: 1px dotted var(--030);
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  color: var(--030);
+}
+
+.list .entry .row *:not(.divider) { color: var(--080); white-space: nowrap; }
+.list .entry .row.tiny { color: var(--060); font-size: 0.75rem; }
+.list .entry .highlight { color: var(--100); }
+
+/* Image Viewer */
+.image-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--000);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.image-viewer-fullimage {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border: var(--border-width-default) solid var(--030);
+  border-radius: var(--radius);
+}
+
+img.clickable {
+  cursor: pointer;
+}
+
+img.clickable:focus {
+  outline: 2px solid var(--080);
+  outline-offset: 2px;
+}
+
+
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+
+.entry--current{
+  opacity: 0.3;
+  text-decoration: line-through;
+}
+
+.image-viewer-overlay[style*="display: flex"] {
+  cursor: pointer;
+}
+.image-viewer-overlay[style*="display: flex"] .image-viewer-fullimage {
+  cursor: default;
+}
+
+.excerpt {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  line-height: 1.5;
+}

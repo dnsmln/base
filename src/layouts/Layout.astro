@@ -1,0 +1,64 @@
+---
+import '../assets/styles/main.css';
+import ImageViewer from '../components/ImageViewer.astro';
+import Head from '../components/Head.astro';
+import More from '../components/More.astro';
+import { getSeason } from "../utils/dateFormat";
+import { SITE_CONFIG } from '../config';
+
+const { entry } = Astro.props;
+
+const title = entry?.data?.title || SITE_CONFIG.siteTitle;
+const description = entry?.data?.excerpt || SITE_CONFIG.description;
+const date = entry?.data?.date;
+
+const pageTitle = Astro.url.pathname === '/' 
+  ? "Home of Denis Moulin"
+  : `${title} by Denis Moulin`;
+
+const { Content } = entry ? await entry.render() : { Content: null };
+---
+
+<html lang="en">
+  <head>
+    <Head 
+      title={pageTitle}
+      description={description}
+      ogImage={SITE_CONFIG.ogImage}
+    />
+  </head>
+  <body>
+    <main id="main-content">
+      <div class="divider divider--h" style="position: fixed; z-index: 9999;"></div>
+      {entry ? (
+        <section>
+          <div class="title">
+            {date && <i>{getSeason(date)}</i>}
+          </div>
+          <div class="content markdown">
+            <h1>{title}</h1>
+            <Content />
+          </div>
+        </section>
+      ) : (
+        <slot />
+      )}
+      <More />
+    </main>
+    <ImageViewer />
+    <section class="footer">
+      <div class="title">
+        <i id="datetime">{getSeason(new Date().toISOString())}</i>
+      </div>
+      <div class="content">
+        <div class="list inline" style="gap: 2rem;">
+          {Astro.url.pathname !== "/" && <a href="/" class="dimmed">Home</a>}
+          {Astro.url.pathname !== "/posts/about" && <a href="/posts/about" class="dimmed">About</a>}
+          {Astro.url.pathname !== "/posts/now" && <a href="/posts/now" class="dimmed">Now</a>}
+          {Astro.url.pathname !== "/posts/someday" && <a href="/posts/someday" class="dimmed">Someday</a>}
+          {Astro.url.pathname !== "/posts/colophon" && <a href="/posts/colophon" class="dimmed">Colophon</a>}
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+---
+import { getCollection } from "astro:content";
+import { getSeason } from "../utils/dateFormat";
+
+// Get the current path to determine which post is being viewed
+const currentPath = Astro.url.pathname;
+
+// Get all posts and filter for listed ones only
+const posts = await getCollection("posts");
+const listedPosts = posts.filter(post => post.data.listed === true);
+
+// Extract the current post slug from the URL if on a post page
+let currentSlug: string | null = null;
+const postMatch = currentPath.match(/^\/posts\/([^\/]+)\/?$/);
+if (postMatch) {
+  currentSlug = postMatch[1];
+}
+
+// Group posts by year
+const groupedPosts = listedPosts.reduce((acc, post) => {
+  const year = new Date(post.data.date).getFullYear();
+  if (!acc[year]) {
+    acc[year] = [];
+  }
+  acc[year].push(post);
+  return acc;
+}, {} as Record<string, any[]>);
+---
+
+<section id="index">
+  <i class="title">Index</i>
+  <div class="content">
+    <div class="list">
+      {Object.entries(groupedPosts)
+        .sort(([a], [b]) => Number(b) - Number(a))
+        .map(([year, yearPosts]) => (
+          <>
+            {(yearPosts as any[])
+              .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+              .map(post => {
+                const postSlug = post.data.permalink || post.slug;
+                return (
+                  <div class={`entry${currentSlug === postSlug ? " entry--current" : ""}`}>
+                    <div class="row">
+                      <p>{getSeason(post.data.date)}</p>
+                      <div class="divider divider--h" />
+                      <a 
+                        href={`/posts/${postSlug}`}
+                        class={`capitalized${currentSlug === postSlug ? " current" : ""}`}
+                      >
+                        {post.data.title}
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            <br />
+          </>
+        ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I Ching</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+      padding: 1rem;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .card-content {
+      padding: 1.5rem;
+    }
+    
+    .card-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid #eee;
+    }
+    
+    .coins-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .coin {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #8B6914;
+      background-color: #F0D080;
+      border: 2px solid #C9A959;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .coin.initial {
+      background-color: #e0e0e0;
+      border-color: #ccc;
+      color: #999;
+    }
+    
+    .toss-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .hexagram {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .line {
+      height: 12px;
+      width: 120px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .line-placeholder {
+      height: 12px;
+      width: 120px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+    }
+    
+    .yang {
+      height: 12px;
+      width: 120px;
+      background-color: #000;
+      border-radius: 4px;
+    }
+    
+    .yin {
+      display: flex;
+      justify-content: space-between;
+      width: 120px;
+    }
+    
+    .yin-part {
+      height: 12px;
+      width: 52px;
+      background-color: #000;
+      border-radius: 4px;
+    }
+    
+    .changing-yang, .changing-yin {
+      position: relative;
+    }
+    
+    .changing-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      background-color: white;
+      border-radius: 50%;
+    }
+    
+    .button {
+      display: inline-block;
+      background-color: #000000;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    
+    .button:hover {
+      background-color: #333333;
+    }
+    
+    .button:disabled {
+      background-color: #999999;
+      cursor: not-allowed;
+    }
+    
+    .button.outline {
+      background-color: white;
+      color: #000000;
+      border: 1px solid #000000;
+    }
+    
+    .button.outline:hover {
+      background-color: #f0f0f0;
+    }
+    
+    .button.full-width {
+      width: 100%;
+      display: block;
+    }
+    
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      border: 1px solid #e9ecef;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-content">
+      <div class="coins-container" id="coins">
+        <div class="coin initial"></div>
+        <div class="coin initial"></div>
+        <div class="coin initial"></div>
+      </div>
+      
+      <div class="toss-info">
+        <div id="line-count">Line 0/6</div>
+        <button id="toss-button" class="button">Toss Coins</button>
+      </div>
+      
+      <div class="hexagram" id="hexagram">
+        <div class="line-placeholder"></div>
+        <div class="line-placeholder"></div>
+        <div class="line-placeholder"></div>
+        <div class="line-placeholder"></div>
+        <div class="line-placeholder"></div>
+        <div class="line-placeholder"></div>
+      </div>
+      
+      <div id="result" style="display: none;" class="result"></div>
+    </div>
+    
+    <div class="card-footer">
+      <button id="reset-button" class="button outline full-width">Reset</button>
+    </div>
+  </div>
+  
+  <script>
+    // Line types
+    const LINE_TYPES = {
+      YANG: 'yang',
+      YIN: 'yin',
+      CHANGING_YANG: 'changing-yang',
+      CHANGING_YIN: 'changing-yin',
+      NULL: null
+    };
+    
+    // Hexagram data - just names for the simplified version
+    const hexagramData = [
+      { number: 1, name: "Qián (The Creative)" },
+      { number: 2, name: "Kūn (The Receptive)" },
+      { number: 3, name: "Zhūn (Difficulty at the Beginning)" },
+      { number: 4, name: "Méng (Youthful Folly)" },
+      { number: 5, name: "Xū (Waiting)" },
+      { number: 6, name: "Sòng (Conflict)" },
+      { number: 7, name: "Shī (The Army)" },
+      { number: 8, name: "Bì (Holding Together)" },
+      { number: 9, name: "Xiǎo Chù (Small Accumulation)" },
+      { number: 10, name: "Lǚ (Treading)" },
+      { number: 11, name: "Tài (Peace)" },
+      { number: 12, name: "Pǐ (Standstill)" },
+      { number: 13, name: "Tóng Rén (Fellowship)" },
+      { number: 14, name: "Dà Yǒu (Great Possession)" },
+      { number: 15, name: "Qiān (Modesty)" },
+      { number: 16, name: "Yù (Enthusiasm)" },
+      { number: 17, name: "Suí (Following)" },
+      { number: 18, name: "Gǔ (Decay)" },
+      { number: 19, name: "Lín (Approach)" },
+      { number: 20, name: "Guān (Contemplation)" },
+      { number: 21, name: "Shì Kè (Biting Through)" },
+      { number: 22, name: "Bì (Grace)" },
+      { number: 23, name: "Bō (Splitting Apart)" },
+      { number: 24, name: "Fù (Return)" },
+      { number: 25, name: "Wú Wàng (Innocence)" },
+      { number: 26, name: "Dà Chù (Great Accumulation)" },
+      { number: 27, name: "Yí (Nourishment)" },
+      { number: 28, name: "Dà Guò (Great Excess)" },
+      { number: 29, name: "Kǎn (The Abysmal Water)" },
+      { number: 30, name: "Lí (The Clinging Fire)" },
+      { number: 31, name: "Xián (Influence)" },
+      { number: 32, name: "Héng (Duration)" },
+      { number: 33, name: "Dùn (Retreat)" },
+      { number: 34, name: "Dà Zhuàng (Great Power)" },
+      { number: 35, name: "Jìn (Progress)" },
+      { number: 36, name: "Míng Yí (Darkening of the Light)" },
+      { number: 37, name: "Jiā Rén (Family)" },
+      { number: 38, name: "Kuí (Opposition)" },
+      { number: 39, name: "Jiǎn (Obstruction)" },
+      { number: 40, name: "Xiè (Deliverance)" },
+      { number: 41, name: "Sǔn (Decrease)" },
+      { number: 42, name: "Yì (Increase)" },
+      { number: 43, name: "Guài (Breakthrough)" },
+      { number: 44, name: "Gòu (Coming to Meet)" },
+      { number: 45, name: "Cuì (Gathering Together)" },
+      { number: 46, name: "Shēng (Pushing Upward)" },
+      { number: 47, name: "Kùn (Oppression)" },
+      { number: 48, name: "Jǐng (The Well)" },
+      { number: 49, name: "Gé (Revolution)" },
+      { number: 50, name: "Dǐng (The Cauldron)" },
+      { number: 51, name: "Zhèn (Thunder)" },
+      { number: 52, name: "Gèn (Keeping Still)" },
+      { number: 53, name: "Jiàn (Development)" },
+      { number: 54, name: "Guī Mèi (The Marrying Maiden)" },
+      { number: 55, name: "Fēng (Abundance)" },
+      { number: 56, name: "Lǚ (The Wanderer)" },
+      { number: 57, name: "Xùn (The Gentle Wind)" },
+      { number: 58, name: "Duì (The Joyous Lake)" },
+      { number: 59, name: "Huàn (Dispersion)" },
+      { number: 60, name: "Jié (Limitation)" },
+      { number: 61, name: "Zhōng Fú (Inner Truth)" },
+      { number: 62, name: "Xiǎo Guò (Small Excess)" },
+      { number: 63, name: "Jì Jì (After Completion)" },
+      { number: 64, name: "Wèi Jì (Before Completion)" }
+    ];
+    
+    // App state
+    let state = {
+      lines: Array(6).fill(null),
+      currentLine: 0,
+      coinResults: [0, 0, 0],
+      isComplete: false,
+      isTossing: false
+    };
+    
+    // DOM elements
+    const coinsContainer = document.getElementById('coins');
+    const lineCountElement = document.getElementById('line-count');
+    const tossButton = document.getElementById('toss-button');
+    const resetButton = document.getElementById('reset-button');
+    const hexagramElement = document.getElementById('hexagram');
+    const resultElement = document.getElementById('result');
+    
+    // Toss a single coin (2 = tails, 3 = heads)
+    function tossCoin() {
+      return Math.floor(Math.random() * 2) + 2;
+    }
+    
+    // Update the coin display
+    function updateCoins(coins) {
+      coinsContainer.innerHTML = '';
+      
+      coins.forEach(value => {
+        const coinElement = document.createElement('div');
+        coinElement.className = value === 0 ? 'coin initial' : 'coin';
+        
+        if (value !== 0) {
+          coinElement.textContent = value === 3 ? 'H' : 'T';
+        }
+        
+        coinsContainer.appendChild(coinElement);
+      });
+    }
+    
+    // Update the hexagram display
+    function updateHexagram(lines) {
+      hexagramElement.innerHTML = '';
+      
+      lines.forEach(lineType => {
+        const lineElement = document.createElement('div');
+        
+        if (lineType === null) {
+          lineElement.className = 'line-placeholder';
+        } else if (lineType === LINE_TYPES.YANG) {
+          lineElement.className = 'yang';
+        } else if (lineType === LINE_TYPES.YIN) {
+          lineElement.className = 'line yin';
+          
+          const leftPart = document.createElement('div');
+          leftPart.className = 'yin-part';
+          
+          const rightPart = document.createElement('div');
+          rightPart.className = 'yin-part';
+          
+          lineElement.appendChild(leftPart);
+          lineElement.appendChild(rightPart);
+        } else if (lineType === LINE_TYPES.CHANGING_YANG) {
+          lineElement.className = 'yang changing-yang';
+          
+          const dot = document.createElement('div');
+          dot.className = 'changing-dot';
+          lineElement.appendChild(dot);
+        } else if (lineType === LINE_TYPES.CHANGING_YIN) {
+          lineElement.className = 'line yin changing-yin';
+          
+          const leftPart = document.createElement('div');
+          leftPart.className = 'yin-part';
+          
+          const rightPart = document.createElement('div');
+          rightPart.className = 'yin-part';
+          
+          const dot = document.createElement('div');
+          dot.className = 'changing-dot';
+          
+          lineElement.appendChild(leftPart);
+          lineElement.appendChild(rightPart);
+          lineElement.appendChild(dot);
+        }
+        
+        hexagramElement.appendChild(lineElement);
+      });
+    }
+    
+    // Update the line count display
+    function updateLineCount() {
+      lineCountElement.textContent = `Line ${state.currentLine}/6${state.isComplete ? ' - Complete!' : ''}`;
+    }
+    
+    // Show the hexagram result
+    function showResult(lines) {
+      if (!state.isComplete) {
+        resultElement.style.display = 'none';
+        return;
+      }
+      
+      // Convert lines to binary for hexagram identification
+      const binaryValue = lines.map(line => {
+        if (line === LINE_TYPES.YANG || line === LINE_TYPES.CHANGING_YANG) return 1;
+        return 0;
+      });
+      
+      // Calculate hexagram number (1-64)
+      const lowerTrigram = parseInt(binaryValue.slice(3).join(''), 2);
+      const upperTrigram = parseInt(binaryValue.slice(0, 3).join(''), 2);
+      const hexagramNumber = lowerTrigram * 8 + upperTrigram + 1;
+      
+      // Get hexagram data
+      const hexagram = hexagramData[hexagramNumber - 1] || {
+        number: hexagramNumber,
+        name: "Unknown"
+      };
+      
+      // Display the result
+      resultElement.innerHTML = `<strong>Hexagram ${hexagram.number}:</strong> ${hexagram.name}`;
+      resultElement.style.display = 'block';
+    }
+    
+    // Toss the coins
+    function tossCoins() {
+      if (state.currentLine >= 6 || state.isTossing) return;
+      
+      state.isTossing = true;
+      tossButton.disabled = true;
+      tossButton.textContent = 'Tossing...';
+      
+      // Animate the coin tosses
+      const animationDuration = 1000;
+      let animationCount = 0;
+      
+      const animateCoins = () => {
+        if (animationCount < 10) {
+          state.coinResults = [tossCoin(), tossCoin(), tossCoin()];
+          updateCoins(state.coinResults);
+          animationCount++;
+          setTimeout(animateCoins, animationDuration / 10);
+        } else {
+          // Final result
+          const finalCoins = [tossCoin(), tossCoin(), tossCoin()];
+          state.coinResults = finalCoins;
+          updateCoins(finalCoins);
+          
+          // Calculate line type
+          const sum = finalCoins.reduce((a, b) => a + b, 0);
+          let lineType = null;
+          
+          switch (sum) {
+            case 6: // 3 tails (2+2+2) - changing yin
+              lineType = LINE_TYPES.CHANGING_YIN;
+              break;
+            case 7: // 2 tails (2+2) & 1 head (3) - yin
+              lineType = LINE_TYPES.YIN;
+              break;
+            case 8: // 1 tail (2) & 2 heads (3+3) - yang
+              lineType = LINE_TYPES.YANG;
+              break;
+            case 9: // 3 heads (3+3+3) - changing yang
+              lineType = LINE_TYPES.CHANGING_YANG;
+              break;
+          }
+          
+          // Update lines
+          const newLines = [...state.lines];
+          newLines[5 - state.currentLine] = lineType; // Fill from bottom to top
+          state.lines = newLines;
+          
+          // Update state
+          state.currentLine++;
+          state.isComplete = state.currentLine >= 6;
+          state.isTossing = false;
+          
+          // Update UI
+          updateHexagram(state.lines);
+          updateLineCount();
+          showResult(state.lines);
+          
+          // Reset button state
+          tossButton.disabled = state.isComplete;
+          tossButton.textContent = 'Toss Coins';
+        }
+      };
+      
+      animateCoins();
+    }
+    
+    // Reset the app
+    function reset() {
+      state = {
+        lines: Array(6).fill(null),
+        currentLine: 0,
+        coinResults: [0, 0, 0],
+        isComplete: false,
+        isTossing: false
+      };
+      
+      updateCoins(state.coinResults);
+      updateHexagram(state.lines);
+      updateLineCount();
+      resultElement.style.display = 'none';
+      tossButton.disabled = false;
+    }
+    
+    // Event listeners
+    tossButton.addEventListener('click', tossCoins);
+    resetButton.addEventListener('click', reset);
+    
+    // Initialize the app
+    updateCoins(state.coinResults);
+    updateHexagram(state.lines);
+    updateLineCount();
+  </script>
+</body>
+</html>

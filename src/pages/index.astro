@@ -1,7 +1,13 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const latest = await getCollection("posts")
+  .then(posts => posts
+    .filter(post => post.data.listed !== false)
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  )
+  .then(posts => posts[0]);
 ---
 
-<MainLayout title="Words, Colors, Shapes.">
-	<h1>Helloworld</h1>
-</MainLayout>
+<Layout entry={latest} />

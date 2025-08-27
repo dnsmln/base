@@ -1,0 +1,16 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+  return posts.map((post) => ({
+    params: { slug: post.data.permalink || post.slug },
+    props: { entry: post },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+
+<Layout entry={entry} />

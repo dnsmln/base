@@ -13,8 +13,10 @@ const description = entry?.data?.excerpt || SITE_CONFIG.description;
 const date = entry?.data?.date;
 
 const pageTitle = Astro.url.pathname === '/' 
-  ? "Words, colors, and shapes"
-  : `Home of Denis Moulin`;
+  ? "Words, shapes, and colors"
+  : entry?.data?.title 
+    ? `${entry.data.title} – Denis Moulin`
+    : `Home of Denis Moulin`;
 
 const { Content } = entry ? await entry.render() : { Content: null };
 ---
@@ -53,11 +55,10 @@ const { Content } = entry ? await entry.render() : { Content: null };
       <div class="content">
         <div class="list inline" style="gap: 2rem;">
           {Astro.url.pathname !== "/" && <a href="/" class="dimmed">Home</a>}
-          {Astro.url.pathname !== "/posts/about" && <a href="/posts/about" class="dimmed">About</a>}
-          {Astro.url.pathname !== "/posts/now" && <a href="/posts/now" class="dimmed">Now</a>}
-          {Astro.url.pathname !== "/posts/someday" && <a href="/posts/someday" class="dimmed">Someday</a>}
-          {Astro.url.pathname !== "/posts/colophon" && <a href="/posts/colophon" class="dimmed">Colophon</a>}
+          <a href="/posts/about">About</a>
+          <a href="/posts/colophon">Colophon</a>
         </div>
+        <!-- Debug: Current pathname is {Astro.url.pathname} -->
       </div>
     </section>
   </body>

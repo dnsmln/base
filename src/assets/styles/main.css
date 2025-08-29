@@ -135,8 +135,7 @@ section,
 article {
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 34rem 1fr;
-  border-bottom: var(--border-width-default) solid var(--030);
+  grid-template-columns: 1fr 32rem 1fr;
 }
 
 section [class*="title"] {
@@ -146,9 +145,8 @@ section [class*="title"] {
 
 section [class*="content"] {
   padding: 2rem;
-  border-left: var(--border-width-default) solid var(--030);
 }
-
+/*
 section.footer{
   z-index: 8888;
   position: fixed;
@@ -156,8 +154,6 @@ section.footer{
   width: 100%;
   background-color: var(--000);
   border-top: var(--border-width-default) solid var(--030);
-  /* Use a gradient to fade in the footer background from transparent to solid
-  background: linear-gradient(to bottom, transparent 0%, var(--000) 40%); */
 }
 
 section.footer [class*="title"] {

@@ -20,21 +20,6 @@
 :root {
   --radius: 0.5rem;
   --border-width-default: 1px;
-  --000: rgb(250, 247, 242);
-  --010: rgba(21, 21, 21, 0.0125);
-  --020: rgba(21, 21, 21, 0.025);
-  --030: rgba(21, 21, 21, 0.075);
-  --060: rgba(21, 21, 21, 0.3);
-  --080: rgba(21, 21, 21, 0.7);
-  --100: rgba(21, 21, 21, 1);
-  --shadow010: 0px 0px 0px 1px var(--030);
-  --shadow050: 0px 0px 1rem 0.5rem var(--060);
-  transition: all 0.5s ease;
-}
-
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
     --000: rgb(18, 18, 20);
     --010: rgba(255, 255, 255, 0.0125);
     --020: rgba(255, 255, 255, 0.025);
@@ -44,7 +29,7 @@
     --100: rgba(255, 255, 255, 1);
     --shadow010: 0px 0px 0px 1px var(--030);
     --shadow050: 0px 0px 1rem 0.5rem var(--060);
-  }
+  transition: all 0.5s ease;
 }
 
 /* Selection styles */

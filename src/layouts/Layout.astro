@@ -46,9 +46,21 @@ const { Content } = entry ? await entry.render() : { Content: null };
         <slot />
       )}
       <More />
+      <section>
+      <div class="title">
+        <i id="datetime">More</i>
+      </div>
+      <div class="content">
+        <div class="list inline" style="gap: 2rem;">
+          {Astro.url.pathname !== "/" && <a href="/" class="dimmed">Home</a>}
+          <a href="/posts/about">About</a>
+          <a href="/posts/colophon">Colophon</a>
+        </div>
+        <!-- Debug: Current pathname is {Astro.url.pathname} -->
+      </div>
+    </section>
     </main>
     <ImageViewer />
-    <section class="footer">
-    </section>
+    
   </body>
 </html>

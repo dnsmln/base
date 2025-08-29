@@ -129,13 +129,12 @@ a:hover {
 
 
 /* Section layout */
-main{  margin-bottom: 4rem;}
-
 section,
 article {
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 32rem 1fr;
+  margin-bottom: 4rem;
 }
 
 section [class*="title"] {

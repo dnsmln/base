@@ -264,7 +264,7 @@ li {
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;
-  border: var(--border-width-default) solid var(--030);
+  border: var(--border-width-default) solid var(--010);
   border-radius: var(--radius);
 }
 
@@ -273,8 +273,8 @@ img.clickable {
 }
 
 img.clickable:focus {
-  outline: 2px solid var(--080);
-  outline-offset: 2px;
+  outline: 1px solid var(--010);
+  outline-offset: 1px;
 }
 
 

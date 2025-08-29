@@ -207,7 +207,7 @@ li {
   height: auto;
   margin: 1.5rem 0;
   border-radius: var(--radius);
-  border: var(--border-width-default) solid var(--030);
+  border: var(--border-width-default) solid var(--020);
 }
 
 /* List styles */

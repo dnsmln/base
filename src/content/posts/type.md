@@ -18,7 +18,6 @@ Starting with quick sketches helped us align on the different directions we like
 
 ![alt](/images/journal/type/type-image-1.png)
 
-
 ### Playing with the key
 The first few high-fidelity keys had a retro feel but were kind of bland. I tried a couple of alternatives with tints or combination of more than one key.
 

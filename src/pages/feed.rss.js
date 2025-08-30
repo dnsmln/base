@@ -41,24 +41,47 @@ export async function GET() {
         '<em>$1</em>'
       );
       
-      // 5. Convert paragraphs (double line breaks)
+      // 5. Convert headings (must be before paragraph conversion)
+      htmlContent = htmlContent.replace(
+        /^###\s+(.+)$/gm,
+        '<h3>$1</h3>'
+      );
+      htmlContent = htmlContent.replace(
+        /^##\s+(.+)$/gm,
+        '<h2>$1</h2>'
+      );
+      htmlContent = htmlContent.replace(
+        /^#\s+(.+)$/gm,
+        '<h1>$1</h1>'
+      );
+      
+      // 6. Fix video tags for RSS compatibility (remove attributes that don't work in RSS)
+      htmlContent = htmlContent.replace(
+        /<video[^>]*\s+src="([^"]+)"[^>]*>[\s\S]*?<\/video>/gi,
+        '<p><strong>[Video]</strong><br><a href="$1">View video: $1</a></p>'
+      );
+      
+      // 8. Convert paragraphs (double line breaks)
       htmlContent = htmlContent.replace(/\n\n+/g, '</p><p>');
       
-      // 6. Wrap in paragraph tags if there's content
+      // 9. Wrap in paragraph tags if there's content
       if (htmlContent.trim()) {
         htmlContent = '<p>' + htmlContent + '</p>';
       }
       
-      // 7. Convert single line breaks to <br> within paragraphs
+      // 10. Convert single line breaks to <br> within paragraphs
       htmlContent = htmlContent.replace(/\n/g, '<br>');
       
-      // Convert relative image URLs to absolute URLs
+      // Convert relative URLs to absolute URLs
       const absoluteContent = htmlContent.replace(
         /src="\/images\//g,
         `src="${SITE_URL}/images/`
       ).replace(
         /href="\/posts\//g,
         `href="${SITE_URL}/posts/`
+      ).replace(
+        /href="\/images\//g,
+        `href="${SITE_URL}/images/`
       );
       
       const postUrl = post.data.permalink 

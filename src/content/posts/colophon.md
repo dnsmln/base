@@ -36,5 +36,3 @@ I kept things black and white after experimenting with colours. Tried beige back
 I've tried my share of static site generators, but Astro won me over. It's well-documented, actively maintained, and writing in it helps me better understand engineering constraints. Plus, the component system just makes sense.
 
 Everything lives on Github - code, images, all of it. Vercel handles deployment to Cloudflare. Simple setup, one less thing to worry about.
-
-No analytics.

@@ -3,6 +3,7 @@ import '../assets/styles/main.css';
 import ImageViewer from '../components/ImageViewer.astro';
 import Head from '../components/Head.astro';
 import More from '../components/More.astro';
+import Navigation from '../components/Navigation.astro';
 import { getSeason } from "../utils/dateFormat";
 import { SITE_CONFIG } from '../config';
 
@@ -46,21 +47,8 @@ const { Content } = entry ? await entry.render() : { Content: null };
         <slot />
       )}
       <More />
+      <Navigation />
     </main>
     <ImageViewer />
-    <section class="footer">
-      <div class="title">
-        <i id="datetime">{getSeason(new Date().toISOString())}</i>
-      </div>
-      <div class="content">
-        <div class="list inline" style="gap: 2rem;">
-          {Astro.url.pathname !== "/" && <a href="/" class="dimmed">Home</a>}
-          <a href="/posts/about">About</a>
-          <a href="/posts/colophon">Colophon</a>
-          <a href="/feed.rss">RSS</a>
-        </div>
-        <!-- Debug: Current pathname is {Astro.url.pathname} -->
-      </div>
-    </section>
   </body>
 </html>

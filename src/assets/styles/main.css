@@ -154,6 +154,13 @@ section.footer [class*="content"] {
   }
 }
 
+@media screen and (max-width: 31.25rem) {
+  a[href="/feed.rss"],
+  a[href*="up"] {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 48rem) {
 
   section {
